@@ -3,6 +3,7 @@
 # @Author  : kaiji@xiaohongshu.com
 # @File    : linear-gradient-1.py
 # @Software: IntelliJ IDEA
+import os
 from cProfile import label
 
 import tensorflow as tf
@@ -39,6 +40,10 @@ init = tf.global_variables_initializer()
 train_epochs = 20
 display_step = 2
 
+saver = tf.train.Saver(max_to_keep=1)
+savedir = "log/"
+model = "linearmodel.ckpt"
+
 with tf.Session() as sess:
     sess.run(init)
     plotdata = {"batchsize": [], "loss": []}
@@ -55,6 +60,7 @@ with tf.Session() as sess:
             if not (loss == "NA"):
                 plotdata["batchsize"].append(epoch)
                 plotdata["loss"].append(loss)
+            saver.save(sess, os.path.join(savedir, model), global_step=epoch)
 
     print("Finished!")
     print("cost=", sess.run(cost, feed_dict={X: train_X, Y: train_Y}), "W=", sess.run(W), "b=", sess.run(b))
@@ -73,4 +79,13 @@ with tf.Session() as sess:
 
     plt.show()
 
-    print("x=0.2, z=", sess.run(z, feed_dict={X:0.2}))
+with tf.Session() as sess:
+    sess.run(init)
+    ckpt = tf.train.latest_checkpoint(savedir)
+    if ckpt:
+        saver.restore(sess, ckpt)
+        print("x=0.2, z=", sess.run(z, feed_dict={X: 0.2}))
+
+from tensorflow.python.tools.inspect_checkpoint import print_tensors_in_checkpoint_file
+ckpt = tf.train.get_checkpoint_state(savedir)
+print_tensors_in_checkpoint_file(ckpt.model_checkpoint_path, None, True)
