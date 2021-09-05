@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2021/8/22 1:40 下午
 # @Author  : kaiji@xiaohongshu.com
-# @File    : linear-gradient-1.py
+# @File    : c-01-linear-gradient.py
 # @Software: IntelliJ IDEA
 import os
 from cProfile import label
