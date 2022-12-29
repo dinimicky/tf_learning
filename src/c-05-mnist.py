@@ -19,8 +19,8 @@ print ('输入数据打shape:',mnist.train.images.shape)
 import pylab
 im = mnist.train.images[1]
 im = im.reshape(-1,28)
-pylab.imshow(im)
-pylab.show()
+# pylab.imshow(im)
+# pylab.show()
 
 
 print ('输入数据打shape:',mnist.test.images.shape)
@@ -104,16 +104,19 @@ with tf.Session() as sess:
     print ("Accuracy:", accuracy.eval({x: mnist.test.images, y: mnist.test.labels}))
     
     output = tf.argmax(pred, 1)
-    batch_xs, batch_ys = mnist.train.next_batch(2)
-    outputval,predv = sess.run([output,pred], feed_dict={x: batch_xs})
-    print(outputval,predv,batch_ys)
+    batch_xs, batch_ys = mnist.train.next_batch(5)
+    batch_y = tf.argmax(batch_ys, 1)
+
+    outputval,predv, pv = sess.run([output,pred, batch_y], feed_dict={x: batch_xs})
+    for o,p,ys,v in zip(outputval,predv,batch_ys,pv):
+        print(o, v, p, ys)
 
     im = batch_xs[0]
     im = im.reshape(-1,28)
-    pylab.imshow(im)
-    pylab.show()
+    # pylab.imshow(im)
+    # pylab.show()
     
     im = batch_xs[1]
     im = im.reshape(-1,28)
-    pylab.imshow(im)
-    pylab.show()
+    # pylab.imshow(im)
+    # pylab.show()
